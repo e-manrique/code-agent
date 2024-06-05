@@ -30,13 +30,13 @@ print(f"\nthere are: {len(documents)} documents loaded")
 
 
 python_splitter = RecursiveCharacterTextSplitter.from_language(
-    language=Language.PYTHON, chunk_size=2000, chunk_overlap=200
+    language=Language.PYTHON, chunk_size=10000, chunk_overlap=1000
 )
 print(f"\nSpliting {len(documents)} documents")
 texts = python_splitter.split_documents(documents)
 print(f"\nSplitted into  {len(texts)} texts")
 
-embedding_model = "codellama:34b"
+embedding_model = "llama3:70b"
 print(f"\nLoading {embedding_model} as ChromaDB ollama embedding model")
 db = Chroma.from_documents(texts, OllamaEmbeddings(model=embedding_model))
 retriever = db.as_retriever(
@@ -51,7 +51,7 @@ while True:
     if query.strip() == "":
         continue
 
-    chat_model="codellama:34b"
+    chat_model="llama3:70b"
     print(f"\nUsing {chat_model} Chat model")
     llm = ChatOllama(model=chat_model)
 
@@ -59,7 +59,7 @@ while True:
     system_template = """
     Answer the user's questions based on the below context.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    Use three sentences maximum and keep the answer as concise as possible:
+    All the question are related with the test_repo codebase, answer only in this context:
 
     {context}
     """
