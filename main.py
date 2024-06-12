@@ -1,5 +1,5 @@
 import os
-# from git import Repo
+from git import Repo
 from langchain_community.document_loaders.generic import GenericLoader
 from langchain_community.document_loaders.parsers import LanguageParser
 from langchain_text_splitters import Language
@@ -12,11 +12,17 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 
 # Clone
-repo_path = "./test_repo"
-if not os.path.exists(repo_path):
+print("Enter your https repo")
+repo_url = input()
+repo_path = os.path.abspath(".") + "/clone_repo"
+if not os.path.exists(repo_path) and repo_url:
+    Repo.clone_from(repo_url, repo_path)
     print(f"\nCreating repo in {repo_path}")
+else:
+    print("you need a repo bye!!!!")
+    exit(1)
 
-# Load
+
 loader = GenericLoader.from_filesystem(
     repo_path + "/iching",
     glob="**/*",
